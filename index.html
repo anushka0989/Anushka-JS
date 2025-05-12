@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Collection</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #2d2d2d, #1f1f1f);
+            border-radius: 12px;
+            border-bottom: 3px solid #7ec8e3;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .block {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border-top: 3px solid #7ec8e3;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+
+        h2 {
+            color: #7ec8e3;
+            margin-top: 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #444;
+        }
+
+        input, button {
+            padding: 10px 12px;
+            margin: 5px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background: #333;
+            color: #fff;
+        }
+
+        input {
+            width: calc(100% - 34px);
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #7ec8e3;
+            box-shadow: 0 0 0 2px rgba(126, 200, 227, 0.3);
+        }
+
+        button {
+            background: #3a6b8c;
+            border: none;
+            transition: background 0.3s, transform 0.1s;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2c5169;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            cursor: pointer;
+            margin: 20px auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+        }
+
+        #calculator {
+            background: linear-gradient(135deg, #1f2b38, #2d3a47);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .calc-display {
+            width: calc(100% - 30px);
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            background: #2d3a47;
+            border: none;
+            color: #7ec8e3;
+            border-radius: 8px;
+            text-align: right;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        #calculator button {
+            padding: 12px;
+            font-size: 1.1em;
+            background: #2d3a47;
+            margin: 3px;
+        }
+
+        #calculator button:hover {
+            background: #3a4b5c;
+        }
+
+        #calculator button[onclick="calculate()"] {
+            background: #27ae60;
+        }
+
+        #calculator button[onclick="clearDisplay()"] {
+            background: #c0392b;
+        }
+
+        .result-display {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            min-height: 20px;
+        }
+
+        .counter-btn {
+            background: #27ae60;
+            width: 100%;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .counter-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .counter-box {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .counter-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #7ec8e3;
+            margin-top: 5px;
+        }
+
+        .color-mixer input[type="range"] {
+            width: calc(100% - 70px);
+            margin-left: 10px;
+            accent-color: #7ec8e3;
+        }
+
+        .color-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 15px auto;
+            border: 3px solid #444;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .color-name {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #7ec8e3;
+            background: rgba(0,0,0,0.2);
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .slider-value {
+            width: 40px;
+            text-align: right;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(39, 174, 96, 0.9);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: rgba(231, 76, 60, 0.9);
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        form input, form button {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Interactive Feature Collection</h1>
+    </div>
+
+    <div class="grid">
+       
+        <div class="block">
+            <h2>Alert Buttons</h2>
+            <button onclick="showToast('Button 1 notification!', 'success')">Alert 1</button>
+            <button onclick="showToast('Button 2 notification!', 'error')">Alert 2</button>
+        </div>
+
+     
+        <div class="block">
+            <h2>Math Operations</h2>
+            <input type="number" id="num1" placeholder="Number 1">
+            <input type="number" id="num2" placeholder="Number 2">
+            <button onclick="performOperation('add')">Add</button>
+            <button onclick="performOperation('multiply')">Multiply</button>
+            <div class="result-display" id="mathResult"></div>
+        </div>
+
+       
+        <div class="block">
+            <h2>Even/Odd Check</h2>
+            <input type="number" id="evenOddInput" placeholder="Enter a number">
+            <button onclick="checkEvenOdd()">Check</button>
+            <div class="result-display" id="evenOddResult"></div>
+        </div>
+
+        <div class="block">
+            <h2>Voting Age Check</h2>
+            <input type="number" id="ageInput" placeholder="Enter your age">
+            <button onclick="checkVotingAge()">Check</button>
+            <div class="result-display" id="votingResult"></div>
+        </div>
+
+
+        <div class="block">
+            <h2>Prime Numbers</h2>
+            <input type="number" id="primeInput" placeholder="Enter upper limit">
+            <button onclick="showPrimes()">Show Primes</button>
+            <div class="result-display" id="primeResult"></div>
+        </div>
+
+      
+        <div class="block">
+            <h2>Registration Form</h2>
+            <form id="regForm" onsubmit="return handleFormSubmit(event)">
+                <input type="text" placeholder="Name" required>
+                <input type="email" placeholder="Email" required>
+                <input type="tel" placeholder="Contact" required>
+                <input type="number" placeholder="Roll No" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div class="block">
+            <h2>Color Changer</h2>
+            <div class="circle" onclick="changeColor(this)" style="background: linear-gradient(135deg, #e74c3c, #c0392b)" data-color-index="0"></div>
+        </div>
+
+        <div class="block">
+            <h2>Grade Calculator</h2>
+            <input type="number" id="marksInput" placeholder="Enter marks (0-100)">
+            <button onclick="calculateGrade()">Calculate</button>
+            <div class="result-display" id="gradeResult"></div>
+        </div>
+
+      
+        <div class="block">
+            <h2>Interaction Counters</h2>
+            <button class="counter-btn" id="counterButton">
+                Click or Hover Here
+            </button>
+            <div class="counter-stats">
+                <div class="counter-box">
+                    <div>Clicks</div>
+                    <div class="counter-value" id="clickCount">0</div>
+                </div>
+                <div class="counter-box">
+                    <div>Double Clicks</div>
+                    <div class="counter-value" id="dblClickCount">0</div>
+                </div>
+                <div class="counter-box">
+                    <div>Hovers</div>
+                    <div class="counter-value" id="hoverCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="block">
+            <h2>Color Mixer</h2>
+            <div class="color-mixer">
+                <div class="slider-container">
+                    <label for="red">Red:</label>
+                    <input type="range" id="red" min="0" max="255" value="128">
+                    <span class="slider-value" id="redValue">128</span>
+                </div>
+                <div class="slider-container">
+                    <label for="green">Green:</label>
+                    <input type="range" id="green" min="0" max="255" value="128">
+                    <span class="slider-value" id="greenValue">128</span>
+                </div>
+                <div class="slider-container">
+                    <label for="blue">Blue:</label>
+                    <input type="range" id="blue" min="0" max="255" value="128">
+                    <span class="slider-value" id="blueValue">128</span>
+                </div>
+                <div class="color-preview" id="colorPreview"></div>
+            </div>
+            <div class="color-name" id="colorName">rgb(128, 128, 128)</div>
+        </div>
+
+       
+        <div class="block" id="calculator">
+            <h2 style="color: white;">Calculator</h2>
+            <input type="text" class="calc-display" id="display" readonly>
+            <div class="calc-buttons">
+                <button onclick="appendToDisplay('7')">7</button>
+                <button onclick="appendToDisplay('8')">8</button>
+                <button onclick="appendToDisplay('9')">9</button>
+                <button onclick="appendToDisplay('+')">+</button>
+                <button onclick="appendToDisplay('4')">4</button>
+                <button onclick="appendToDisplay('5')">5</button>
+                <button onclick="appendToDisplay('6')">6</button>
+                <button onclick="appendToDisplay('-')">-</button>
+                <button onclick="appendToDisplay('1')">1</button>
+                <button onclick="appendToDisplay('2')">2</button>
+                <button onclick="appendToDisplay('3')">3</button>
+                <button onclick="appendToDisplay('*')">×</button>
+                <button onclick="appendToDisplay('0')">0</button>
+                <button onclick="appendToDisplay('.')">.</button>
+                <button onclick="calculate()">=</button>
+                <button onclick="appendToDisplay('/')">/</button>
+                <button onclick="clearDisplay()">C</button>
+                <button onclick="appendToDisplay('(')">(</button>
+                <button onclick="appendToDisplay(')')">)</button>
+                <button onclick="calculatePower()">^</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="toast"></div>
+
+    <script>
+   
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            
+        
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+          
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+       
+        function performOperation(operation) {
+            const num1 = parseFloat(document.getElementById('num1').value);
+            const num2 = parseFloat(document.getElementById('num2').value);
+            
+            if (isNaN(num1) || isNaN(num2)) {
+                showToast('Please enter valid numbers', 'error');
+                return;
+            }
+            
+            let result;
+            if(operation === 'add') result = num1 + num2;
+            else result = num1 * num2;
+            
+          
+            const resultElement = document.getElementById('mathResult');
+            resultElement.style.opacity = '0';
+            setTimeout(() => { 
+                resultElement.textContent = `Result: ${result}`;
+                resultElement.style.opacity = '1';
+            }, 300);
+        }
+
+        
+        function checkEvenOdd() {
+            const number = parseInt(document.getElementById('evenOddInput').value);
+            
+            if (isNaN(number)) {
+                showToast('Please enter a valid number', 'error');
+                return;
+            }
+            
+            const result = number % 2 === 0 ? "Even" : "Odd";
+          
+            const resultElement = document.getElementById('evenOddResult');
+            resultElement.style.opacity = '0';
+            setTimeout(() => {
+                resultElement.textContent = result;
+                resultElement.style.opacity = '1';
+            }, 300);
+        }
+
+      
+        function checkVotingAge() {
+            const age = parseInt(document.getElementById('ageInput').value);
+            
+            if (isNaN(age)) {
+                showToast('Please enter a valid age', 'error');
+                return;
+            }
+            
+            const result = age >= 18 ? "Eligible to vote" : "Not eligible to vote";
+            
+            
+            const resultElement = document.getElementById('votingResult');
+            resultElement.style.opacity = '0';
+            setTimeout(() => {
+                resultElement.textContent = result;
+                resultElement.style.opacity = '1';
+            }, 300);
+        }
+
+      
+        function isPrime(num) {
+            for(let i = 2; i <= Math.sqrt(num); i++) {
+                if(num % i === 0) return false;
+            }
+            return num > 1;
+        }
+
+        function showPrimes() {
+            const limit = parseInt(document.getElementById('primeInput').value);
+            
+            if (isNaN(limit) || limit <= 0) {
+                showToast('Please enter a positive number', 'error');
+                return;
+            }
+            
+            let primes = [];
+            for(let i = 2; i <= limit; i++) {
+                if(isPrime(i)) primes.push(i);
+            }
+            
+        
+            const resultElement = document.getElementById('primeResult');
+            resultElement.style.opacity = '0';
+            setTimeout(() => {
+                resultElement.textContent = primes.join(', ');
+                resultElement.style.opacity = '1';
+            }, 300);
+        }
+
+       
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+           
+            showToast('Form submitted successfully!');
+            
+      
+            event.target.reset();
+            return false;
+        }
+
+    
+        const colors = [
+            'linear-gradient(135deg, #e74c3c, #c0392b)', 
+            'linear-gradient(135deg, #2ecc71, #27ae60)', 
+            'linear-gradient(135deg, #3498db, #2980b9)'
+        ];
+        
+        function changeColor(circle) {
+            const currentIndex = parseInt(circle.getAttribute('data-color-index')) || 0;
+            const newIndex = (currentIndex + 1) % colors.length;
+            
+           
+            circle.style.transform = 'scale(0.8)';
+            
+            setTimeout(() => {
+                circle.style.background = colors[newIndex];
+                circle.setAttribute('data-color-index', newIndex);
+                circle.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+
+        function calculateGrade() {
+            const marks = parseInt(document.getElementById('marksInput').value);
+            
+            if (isNaN(marks) || marks < 0 || marks > 100) {
+                showToast('Please enter valid marks (0-100)', 'error');
+                return;
+            }
+            
+            let grade;
+            if(marks >= 90) grade = 'A+';
+            else if(marks >= 80) grade = 'A';
+            else if(marks >= 70) grade = 'B';
+            else if(marks >= 60) grade = 'C';
+            else if(marks >= 50) grade = 'D';
+            else grade = 'F';
+            
+           
+            const resultElement = document.getElementById('gradeResult');
+            resultElement.style.opacity = '0';
+            setTimeout(() => {
+                resultElement.textContent = `Grade: ${grade}`;
+                resultElement.style.opacity = '1';
+            }, 300);
+        }
+
+     
+        let clickCount = 0, dblClickCount = 0, hoverCount = 0;
+        const counterButton = document.getElementById('counterButton');
+        
+        counterButton.addEventListener('click', () => {
+            const element = document.getElementById('clickCount');
+            element.textContent = ++clickCount;
+            element.style.transform = 'scale(1.2)';
+            setTimeout(() => element.style.transform = 'scale(1)', 300);
+        });
+        
+        counterButton.addEventListener('dblclick', () => {
+            const element = document.getElementById('dblClickCount');
+            element.textContent = ++dblClickCount;
+            element.style.transform = 'scale(1.2)';
+            setTimeout(() => element.style.transform = 'scale(1)', 300);
+        });
+        
+        counterButton.addEventListener('mouseover', () => {
+            const element = document.getElementById('hoverCount');
+            element.textContent = ++hoverCount;
+            element.style.transform = 'scale(1.2)';
+            setTimeout(() => element.style.transform = 'scale(1)', 300);
+        });
+
+        
+        const colorInputs = document.querySelectorAll('.color-mixer input');
+        const colorPreview = document.getElementById('colorPreview');
+        
+        function updateColor() {
+            const r = document.getElementById('red').value;
+            const g = document.getElementById('green').value;
+            const b = document.getElementById('blue').value;
+            
+            document.getElementById('redValue').textContent = r;
+            document.getElementById('greenValue').textContent = g;
+            document.getElementById('blueValue').textContent = b;
+            
+            const color = `rgb(${r}, ${g}, ${b})`;
+            colorPreview.style.backgroundColor = color;
+            document.getElementById('colorName').textContent = color;
+        }
+        
+        colorInputs.forEach(input => input.addEventListener('input', updateColor));
+        updateColor(); 
+
+       
+        function appendToDisplay(value) {
+            document.getElementById('display').value += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        function calculate() {
+            try {
+                const displayElement = document.getElementById('display');
+                const result = eval(displayElement.value);
+                
+                if (isFinite(result)) {
+                    displayElement.value = result;
+                } else {
+                    throw new Error("Invalid calculation");
+                }
+            } catch {
+                showToast('Invalid calculation', 'error');
+                clearDisplay();
+            }
+        }
+
+        function calculatePower() {
+            try {
+                const displayElement = document.getElementById('display');
+                const [base, exponent] = displayElement.value.split('^');
+                
+                if (base && exponent) {
+                    const result = Math.pow(parseFloat(base), parseFloat(exponent));
+                    displayElement.value = result;
+                } else {
+                    throw new Error("Invalid format");
+                }
+            } catch {
+                showToast('Invalid power calculation format', 'error');
+            }
+        }
+
+       
+        document.querySelectorAll('input, button').forEach(element => {
+            element.style.transition = 'all 0.3s';
+        });
+        
+        
+        document.querySelectorAll('.result-display').forEach(element => {
+            element.style.transition = 'opacity 0.3s';
+        });
+    </script>
+</body>
+</html>
